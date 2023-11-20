@@ -5,12 +5,12 @@
 
 extern int** sudoku_board;
 int* worker_validation;
-
+int** board = NULL;
 
 
 int** read_board_from_file(char* filename){
     FILE *fp = fopen(filename, "r");
-    int** board = NULL;
+    
 
 
     // replace this comment with your code
@@ -39,6 +39,9 @@ int** read_board_from_file(char* filename){
 
 
 int is_board_valid(){
+    if (board == NULL){
+        return 0;
+    }
     pthread_t* tid;  /* the thread identifiers */
     pthread_attr_t attr;
     param_struct* parameter;
@@ -56,7 +59,7 @@ int is_board_valid(){
         int index = 0;
         for (int row = parameter[spot].starting_row; row < parameter[spot].ending_row; row++){
             for (int col = parameter[spot].starting_col; col < parameter[spot].ending_row; col++){
-                check[index] = sudoku_board[row][col];
+                check[index] = board[row][col];
             }
         }
         pthread_create(&(tid[spot]), &attr, board_piece(check), &check);
@@ -71,7 +74,7 @@ int is_board_valid(){
         int index = 0;
         for (int row = parameter[spot].starting_row; row < parameter[spot].ending_row; row++){
             for (int col = parameter[spot].starting_col; col < parameter[spot].ending_row; col++){
-                check[index] = sudoku_board[row][col];
+                check[index] = board[row][col];
             }
         }
         pthread_create(&(tid[spot]), &attr, board_piece(check), &check);
@@ -88,7 +91,7 @@ int is_board_valid(){
         int index = 0;
         for (int row = parameter[spot].starting_row; row < parameter[spot].ending_row; row++){
             for (int col = parameter[spot].starting_col; col < parameter[spot].ending_row; col++){
-                check[index] = sudoku_board[row][col];
+                check[index] = board[row][col];
             }
         }
         pthread_create(&(tid[spot]), &attr, board_piece(check), &check);
