@@ -7,31 +7,27 @@ extern int** sudoku_board;
 int* worker_validation;
 
 int** read_board_from_file(char* filename){
-    FILE *fp = NULL;
+    FILE *fp = fopen(filename, "r");
     int** board = NULL;
 
     // replace this comment with your code
-    int** board = (int**)malloc(9*sizeof(int*));
+    board = (int**)malloc(9*sizeof(int*));
     for (int col = 0; col < 9; col++)
     {
         board[col] = (int*)malloc(9*sizeof(int));
     }
+    if(fp == NULL) return;
 
     int row = 0;
-    int index = 0;
-    
     while(row < 9){
         int col = 0;
         while(col < 9){
-            board[row][col] = filename[index] - '0';
+            fscanf(fp,"%d",&board[row][col]);
             col++;
-            index +=2;
         }
         row++;
     }
-    
-    
-
+    fclose(fp);
     return board;
 }
 
@@ -57,4 +53,3 @@ int board_piece(int* row){
     }
     return 1;
 }
-
