@@ -5,12 +5,13 @@
 
 extern int** sudoku_board;
 int* worker_validation;
-int** board = NULL;
+
 
 
 int** read_board_from_file(char* filename){
     FILE *fp = fopen(filename, "r");
-    
+    int** board = NULL;
+
 
     // replace this comment with your code
     board = (int**)malloc(9*sizeof(int*));
@@ -74,6 +75,30 @@ int is_board_valid(){
             }
         }
         pthread_create(&(tid[spot]), &attr, board_piece(check), &check);
+    }
+    
+    int horz = 0;
+    int vert = 0;
+    for (int spot = 0; spot < COL_SIZE; spot++){
+        parameter[spot].starting_row = horz;
+        parameter[spot].starting_col = vert;
+        parameter[spot].ending_col = vert+=3;
+        parameter[spot].ending_row = horz+=3;
+        int check [9];
+        int index = 0;
+        for (int row = parameter[spot].starting_row; row < parameter[spot].ending_row; row++){
+            for (int col = parameter[spot].starting_col; col < parameter[spot].ending_row; col++){
+                check[index] = sudoku_board[row][col];
+            }
+        }
+        pthread_create(&(tid[spot]), &attr, board_piece(check), &check);
+        if(vert == 6){
+            horz+=3;
+            vert = 0;
+        }
+        else{
+            vert+=3;
+        }
     }
 
 
