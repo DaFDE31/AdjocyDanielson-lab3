@@ -11,6 +11,12 @@ int** read_board_from_file(char* filename){
     int** board = NULL;
 
     // replace this comment with your code
+    int** board = (int**)malloc(9*sizeof(int*));
+    for (int col = 0; col < 9; col++)
+    {
+        board[col] = (int*)malloc(9*sizeof(int));
+    }
+    
 
     return board;
 }
@@ -24,3 +30,11 @@ int is_board_valid(){
     // replace this comment with your code
     
 }
+
+int board_row(int* row){
+    return 1;
+}
+int board_block(int* block){
+    return 1;
+}
+
