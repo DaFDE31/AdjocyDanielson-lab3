@@ -45,10 +45,16 @@ int is_board_valid(){
     
 }
 
-int board_row(int* row){
-    return 1;
-}
-int board_block(int* block){
+int board_piece(int* row){
+    int* checker[] ={0, 0,0,0,0,0,0,0,0}; 
+    for (int value =0; value < 9; value++){
+        checker[row[value]-1] = 1;
+    }
+    for (int value =0; value < 9; value++){
+        if(checker[value] == 0){
+            return 0;
+        }
+    }
     return 1;
 }
 
