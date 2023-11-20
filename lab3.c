@@ -16,6 +16,19 @@ int** read_board_from_file(char* filename){
     {
         board[col] = (int*)malloc(9*sizeof(int));
     }
+
+    int row = 0;
+    int index = 0;
+    
+    while(row < 9){
+        int col = 0;
+        while(col < 9){
+            col++;
+            index +=2;
+        }
+        row++;
+    }
+    
     
 
     return board;
