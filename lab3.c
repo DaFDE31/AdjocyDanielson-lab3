@@ -23,6 +23,7 @@ int** read_board_from_file(char* filename){
     while(row < 9){
         int col = 0;
         while(col < 9){
+            board[row][col] = filename[index] - '0';
             col++;
             index +=2;
         }
