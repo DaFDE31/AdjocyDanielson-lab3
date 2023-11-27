@@ -101,7 +101,14 @@ int is_board_valid(){
             horz+=3;
             vert = 0;
         }
-        else{
+        else{ int check [9];
+        int index = 0;
+        for (int row = parameter[spot].starting_row; row < parameter[spot].ending_row; row++){
+            for (int col = parameter[spot].starting_col; col < parameter[spot].ending_row; col++){
+                check[index] = sudoku_board[row][col];
+                index++;
+            }
+        }
             vert+=3;
         }
     }
@@ -110,12 +117,21 @@ int is_board_valid(){
     
 }
 
-int board_piece(int* row){
-    int checker[] ={0,0,0,0,0,0,0,0,0}; 
-    int sum = 0;
-    for (int value =0; value < 9; value++){
-        checker[row[value]-1] = 1;
+void* board_piece(void* piece){
+    param_struct* tester = (param_struct*) piece;
+    int sr = tester->starting_row;
+    int er = tester->ending_row;
+    int sc = tester->starting_col;
+    int ec = tester->ending_col;
+
+    int checker[] ={0,0,0,0,0,0,0,0,0};
+    for (int row = sr; row <= er; row++){
+        for (int col = sc; col <= ec; col++){
+            checker[ sudoku_board[row][col] -1] = 1;
+        }
     }
+
+
     for (int value =0; value < 9; value++){
         if(checker[value] != 1){
             return 0;
