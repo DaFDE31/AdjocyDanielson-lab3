@@ -6,14 +6,14 @@
 extern int** sudoku_board;
 int* worker_validation;
 // ALSO IMPLEMENT GLOBAL ARRAY TO RETURN ANSWERS OF VALIDATION USING TID
-int* valid[27];
+
 
 
 int** read_board_from_file(char* filename){
     FILE *fp = fopen(filename, "r");
     int** board = NULL;
 
-
+    
     // replace this comment with your code
     board = (int**)malloc(9*sizeof(int*));
     for (int col = 0; col < 9; col++)
@@ -46,15 +46,16 @@ int is_board_valid(){
     // replace this comment with your code
     tid = (pthread_t*) malloc(sizeof(int*) * NUM_OF_THREADS);   
     parameter = (param_struct*) malloc(sizeof(param_struct) * NUM_OF_THREADS);
+    int* valid = (int*)malloc(27*sizeof(int));
 
     //MIGHT WANT TO PUT ALL THIS IN THE VALIDATION METHOD
 
     for (int spot = 0; spot < ROW_SIZE; spot++){
         parameter[spot].starting_row = spot;
         parameter[spot].starting_col = 0;
-        parameter[spot].ending_col = COL_SIZE;
+        parameter[spot].ending_col = COL_SIZE-1;
         parameter[spot].ending_row = spot;
-        int check [9];
+        /*int check [9];
         int index = 0;
         //for (int row = parameter[spot].starting_row; row <= parameter[spot].ending_row; row++){
             for (int col = parameter[spot].starting_col; col < parameter[spot].ending_row; col++){
@@ -62,15 +63,16 @@ int is_board_valid(){
                 index++;
             }
         //}
-        pthread_create(&(tid[spot]), &attr, board_piece(check), &check);
+        */
+        pthread_create(&(tid[spot]), &attr, board_piece, &parameter[spot]);
     }
 
-    for (int spot = 0; spot < COL_SIZE; spot++){
+    for (int spot = 9; spot < COL_SIZE+ROW_SIZE; spot++){
         parameter[spot].starting_row = 0;
         parameter[spot].starting_col = spot;
         parameter[spot].ending_col = spot;
-        parameter[spot].ending_row = ROW_SIZE;
-        int check [9];
+        parameter[spot].ending_row = ROW_SIZE-1;
+        /*int check [9];
         int index = 0;
         for (int row = parameter[spot].starting_row; row < parameter[spot].ending_row; row++){
             //for (int col = parameter[spot].starting_col; col <= parameter[spot].ending_row; col++){
@@ -78,17 +80,18 @@ int is_board_valid(){
                 index++;
             //}
         }
-        pthread_create(&(tid[spot]), &attr, board_piece(check), &check);
+        */
+        pthread_create(&(tid[spot]), &attr, board_piece, &parameter[spot]);
     }
     
     int horz = 0;
     int vert = 0;
-    for (int spot = 0; spot < COL_SIZE; spot++){
+    for (int spot = 18; spot < NUM_OF_THREADS; spot++){
         parameter[spot].starting_row = horz;
         parameter[spot].starting_col = vert;
-        parameter[spot].ending_col = vert+3;
-        parameter[spot].ending_row = horz+3;
-        int check [9];
+        parameter[spot].ending_col = vert+2;
+        parameter[spot].ending_row = horz+2;
+        /*int check [9];
         int index = 0;
         for (int row = parameter[spot].starting_row; row < parameter[spot].ending_row; row++){
             for (int col = parameter[spot].starting_col; col < parameter[spot].ending_row; col++){
@@ -96,19 +99,13 @@ int is_board_valid(){
                 index++;
             }
         }
-        pthread_create(&(tid[spot]), &attr, board_piece(check), &check);
+        */
+        pthread_create(&(tid[spot]), &attr, board_piece, &parameter[spot]);
         if(vert == 6){
             horz+=3;
             vert = 0;
         }
-        else{ int check [9];
-        int index = 0;
-        for (int row = parameter[spot].starting_row; row < parameter[spot].ending_row; row++){
-            for (int col = parameter[spot].starting_col; col < parameter[spot].ending_row; col++){
-                check[index] = sudoku_board[row][col];
-                index++;
-            }
-        }
+        else{ 
             vert+=3;
         }
     }
