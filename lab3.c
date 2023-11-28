@@ -6,6 +6,7 @@
 extern int** sudoku_board;
 int* worker_validation;
 // ALSO IMPLEMENT GLOBAL ARRAY TO RETURN ANSWERS OF VALIDATION USING TID
+int valid[27];
 
 
 
@@ -36,6 +37,29 @@ int** read_board_from_file(char* filename){
     }
     fclose(fp);
     return board;
+}
+
+void* board_piece(void* piece){
+    param_struct* tester = (param_struct*) piece;
+    int spot = tester->id;
+    int sr = tester->starting_row;
+    int er = tester->ending_row;
+    int sc = tester->starting_col;
+    int ec = tester->ending_col;
+
+    int checker[] ={0,0,0,0,0,0,0,0,0};
+    for (int row = sr; row <= er; row++){
+        for (int col = sc; col <= ec; col++){
+            checker[ sudoku_board[row][col] -1] = 1;
+        }
+    }
+
+
+    for (int value =0; value < 9; value++){
+        if(checker[value] != 1){
+            valid[spot] = 1;
+        }
+    }
 }
 
 
@@ -118,25 +142,3 @@ int is_board_valid(){
     
 }
 
-void* board_piece(void* piece){
-    param_struct* tester = (param_struct*) piece;
-    int sr = tester->starting_row;
-    int er = tester->ending_row;
-    int sc = tester->starting_col;
-    int ec = tester->ending_col;
-
-    int checker[] ={0,0,0,0,0,0,0,0,0};
-    for (int row = sr; row <= er; row++){
-        for (int col = sc; col <= ec; col++){
-            checker[ sudoku_board[row][col] -1] = 1;
-        }
-    }
-
-
-    for (int value =0; value < 9; value++){
-        if(checker[value] != 1){
-            return 0;
-        }
-    }
-    return 1;
-}
