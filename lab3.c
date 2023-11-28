@@ -22,7 +22,7 @@ int** read_board_from_file(char* filename){
     }
     if(fp == NULL){
         fprintf(stderr, "No file.");
-        return;
+        return NULL;
         }
 
     int row = 0;
@@ -48,9 +48,9 @@ int is_board_valid(){
     parameter = (param_struct*) malloc(sizeof(param_struct) * NUM_OF_THREADS);
     int* valid = (int*)malloc(27*sizeof(int));
 
-    //MIGHT WANT TO PUT ALL THIS IN THE VALIDATION METHOD
 
     for (int spot = 0; spot < ROW_SIZE; spot++){
+        //parameter[spot] = (param_struct) malloc(sizeof(param_struct));
         parameter[spot].starting_row = spot;
         parameter[spot].starting_col = 0;
         parameter[spot].ending_col = COL_SIZE-1;
@@ -108,6 +108,10 @@ int is_board_valid(){
         else{ 
             vert+=3;
         }
+    }
+
+    for(int i =0; i< 27; i++){
+        pthread_join(tid[i], NULL);
     }
 
 
