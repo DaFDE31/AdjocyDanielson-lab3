@@ -26,7 +26,7 @@ int** read_board_from_file(char* filename){
     while(row < 9){
         int col = 0;
         while(col < 9){
-            fscanf(fp,"%d",&board[row][col]);
+            fscanf(fp,"%d%*c",&board[row][col]);
             col++;
         }
         row++;
@@ -43,7 +43,7 @@ void* board_piece(void* piece){
     int sc = tester->starting_col;
     int ec = tester->ending_col;
 
-    int checker[] ={0,0,0,0,0,0,0,0,0};
+    int checker[9] ={0,0,0,0,0,0,0,0,0};
     for (int row = sr; row <= er; row++){
         for (int col = sc; col <= ec; col++){
             checker[ board[row][col] -1] = 1;
@@ -66,13 +66,13 @@ int is_board_valid(){
     tid = (pthread_t*) malloc(sizeof(int*) * NUM_OF_THREADS);   
     parameter = (param_struct*) malloc(sizeof(param_struct) * NUM_OF_THREADS);
     valid = (int*)malloc(27*sizeof(int));
-
-
+    int identity = 0;// id variable, while spot is used to denote rows and such.
     for (int spot = 0; spot < ROW_SIZE; spot++){
-        parameter[spot].starting_row = spot;
-        parameter[spot].starting_col = 0;
-        parameter[spot].ending_col = COL_SIZE-1;
-        parameter[spot].ending_row = spot;
+        parameter[identity].id = identity;
+        parameter[identity].starting_row = spot;
+        parameter[identity].starting_col = 0;
+        parameter[identity].ending_col = COL_SIZE-1;
+        parameter[identity].ending_row = spot;
         /*int check [9];
         int index = 0;
         //for (int row = parameter[spot].starting_row; row <= parameter[spot].ending_row; row++){
@@ -82,15 +82,16 @@ int is_board_valid(){
             }
         //}
         */
-        printf("%d\n", spot);
-        pthread_create(&(tid[spot]), NULL, board_piece, &parameter[spot]);
+       
+        pthread_create(&(tid[identity]), NULL, board_piece, &parameter[identity]);
+        identity++;
     }
 
-    for (int spot = 9; spot < COL_SIZE+ROW_SIZE; spot++){
-        parameter[spot].starting_row = 0;
-        parameter[spot].starting_col = spot;
-        parameter[spot].ending_col = spot;
-        parameter[spot].ending_row = ROW_SIZE-1;
+    for (int spot = 0; spot < COL_SIZE; spot++){
+        parameter[identity].starting_row = 0;
+        parameter[identity].starting_col = spot;
+        parameter[identity].ending_col = spot;
+        parameter[identity].ending_row = ROW_SIZE-1;
         /*int check [9];
         int index = 0;
         for (int row = parameter[spot].starting_row; row < parameter[spot].ending_row; row++){
@@ -100,17 +101,18 @@ int is_board_valid(){
             //}
         }
         */
-        printf("%d\n", spot);
-        pthread_create(&(tid[spot]), NULL, board_piece, &parameter[spot]);
+        
+        pthread_create(&(tid[identity]), NULL, board_piece, &parameter[identity]);
+        identity++;
     }
     
     int horz = 0;
     int vert = 0;
-    for (int spot = 18; spot < NUM_OF_THREADS; spot++){
-        parameter[spot].starting_row = horz;
-        parameter[spot].starting_col = vert;
-        parameter[spot].ending_col = vert+2;
-        parameter[spot].ending_row = horz+2;
+    for (int spot = 0; spot < NUM_OF_SUBGRIDS; spot++){
+        parameter[identity].starting_row = horz;
+        parameter[identity].starting_col = vert;
+        parameter[identity].ending_col = vert+2;
+        parameter[identity].ending_row = horz+2;
         /*int check [9];
         int index = 0;
         for (int row = parameter[spot].starting_row; row < parameter[spot].ending_row; row++){
@@ -120,22 +122,23 @@ int is_board_valid(){
             }
         }
         */
-        printf("%d\n", spot);
-        pthread_create(&(tid[spot]), NULL, board_piece, &parameter[spot]);
+       
+        pthread_create(&(tid[identity]), NULL, board_piece, &parameter[identity]);
+        identity++;
         if(vert == 6){
             horz+=3;
             vert = 0;
         }
         else{ 
             vert+=3;
-        }
+        }identity
     }
     for(int i =0; i< 27; i++){
+        //printf("%s", (char*)tid[i]);
         pthread_join(tid[i], NULL);
     }
 
     for (int v = 0; v < 27; v++){
-        printf("%d", 0);
         if (valid[v] != 1){  
             return 0; 
         }
