@@ -6,13 +6,12 @@
 extern int** sudoku_board;
 int* worker_validation;
 // ALSO IMPLEMENT GLOBAL ARRAY TO RETURN ANSWERS OF VALIDATION USING TID
-int valid[27];
+int* valid;
 
 int**board;
 
 int** read_board_from_file(char* filename){
     FILE *fp = fopen(filename, "r");
-
     board = (int**)malloc(9*sizeof(int*));
     for (int col = 0; col < 9; col++)
     {
@@ -66,7 +65,7 @@ int is_board_valid(){
     // replace this comment with your code
     tid = (pthread_t*) malloc(sizeof(int*) * NUM_OF_THREADS);   
     parameter = (param_struct*) malloc(sizeof(param_struct) * NUM_OF_THREADS);
-    int* valid = (int*)malloc(27*sizeof(int));
+    valid = (int*)malloc(27*sizeof(int));
 
 
     for (int spot = 0; spot < ROW_SIZE; spot++){
@@ -83,7 +82,8 @@ int is_board_valid(){
             }
         //}
         */
-        pthread_create(&(tid[spot]), &attr, board_piece, &parameter[spot]);
+        printf("%d\n", spot);
+        pthread_create(&(tid[spot]), NULL, board_piece, &parameter[spot]);
     }
 
     for (int spot = 9; spot < COL_SIZE+ROW_SIZE; spot++){
@@ -100,7 +100,8 @@ int is_board_valid(){
             //}
         }
         */
-        pthread_create(&(tid[spot]), &attr, board_piece, &parameter[spot]);
+        printf("%d\n", spot);
+        pthread_create(&(tid[spot]), NULL, board_piece, &parameter[spot]);
     }
     
     int horz = 0;
@@ -119,7 +120,8 @@ int is_board_valid(){
             }
         }
         */
-        pthread_create(&(tid[spot]), &attr, board_piece, &parameter[spot]);
+        printf("%d\n", spot);
+        pthread_create(&(tid[spot]), NULL, board_piece, &parameter[spot]);
         if(vert == 6){
             horz+=3;
             vert = 0;
@@ -128,19 +130,45 @@ int is_board_valid(){
             vert+=3;
         }
     }
-
     for(int i =0; i< 27; i++){
         pthread_join(tid[i], NULL);
     }
 
     for (int v = 0; v < 27; v++){
-        if (valid[v] != 1){
-            return 0;
+        printf("%d", 0);
+        if (valid[v] != 1){  
+            return 0; 
         }
-        return 1;
     }
-
-
-    
+    free(valid);
+    free(tid);
+   return 1;
 }
 
+int main(int argc, char *argv[]){
+    
+
+
+
+    board = read_board_from_file(argv[1]);
+    for(int i = 0; i<9; i++ ){
+        for (int e = 0; e<9; e++){
+            printf("%d",board[i][e]);
+        }
+        printf("\n");
+    }
+    
+    int RAHHH = is_board_valid();
+    /*
+    if (is_board_valid()){
+        printf("The board is valid.\n");
+    } else {
+        printf("The board is not valid.\n");
+    }
+    
+    for(int row = 0; row < ROW_SIZE; row++){
+        free(board[row]);
+    }
+    free(board);
+    return 0;*/
+}
