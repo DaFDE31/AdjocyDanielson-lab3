@@ -42,19 +42,29 @@ void* board_piece(void* piece){
     int er = tester->ending_row;
     int sc = tester->starting_col;
     int ec = tester->ending_col;
+    
+    valid[spot] = 1;
 
     int checker[9] ={0,0,0,0,0,0,0,0,0};
     for (int row = sr; row <= er; row++){
+        //printf("Row #%d\n",row);
+
         for (int col = sc; col <= ec; col++){
+            //printf("Row #%d Col#%d\n",row, col);
+
+            //printf("%d",board[row][col]);
             checker[ board[row][col] -1] = 1;
         }
-    }
+    } 
 
     for (int value =0; value < 9; value++){
+        printf("%d ", checker[value]);
         if(checker[value] != 1){
-            valid[spot] = 1;
+            valid[spot] = 0;
         }
     }
+    printf("VALID: %d Starting row:%d Ending row:%d Starting column: %d Ending column: %d\n",valid[spot], sr,er,sc,ec);
+    //printf("%d ", valid[spot]);
 }
 
 
@@ -131,7 +141,7 @@ int is_board_valid(){
         }
         else{ 
             vert+=3;
-        }identity
+        }
     }
     for(int i =0; i< 27; i++){
         //printf("%s", (char*)tid[i]);
@@ -162,6 +172,7 @@ int main(int argc, char *argv[]){
     }
     
     int RAHHH = is_board_valid();
+    printf("RAHHHHHHHH: %d", RAHHH);
     /*
     if (is_board_valid()){
         printf("The board is valid.\n");
