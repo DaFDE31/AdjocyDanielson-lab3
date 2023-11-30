@@ -8,14 +8,11 @@ int* worker_validation;
 // ALSO IMPLEMENT GLOBAL ARRAY TO RETURN ANSWERS OF VALIDATION USING TID
 int valid[27];
 
-
+int**board;
 
 int** read_board_from_file(char* filename){
     FILE *fp = fopen(filename, "r");
-    int** board = NULL;
 
-    
-    // replace this comment with your code
     board = (int**)malloc(9*sizeof(int*));
     for (int col = 0; col < 9; col++)
     {
@@ -50,10 +47,9 @@ void* board_piece(void* piece){
     int checker[] ={0,0,0,0,0,0,0,0,0};
     for (int row = sr; row <= er; row++){
         for (int col = sc; col <= ec; col++){
-            checker[ sudoku_board[row][col] -1] = 1;
+            checker[ board[row][col] -1] = 1;
         }
     }
-
 
     for (int value =0; value < 9; value++){
         if(checker[value] != 1){
@@ -74,7 +70,6 @@ int is_board_valid(){
 
 
     for (int spot = 0; spot < ROW_SIZE; spot++){
-        //parameter[spot] = (param_struct) malloc(sizeof(param_struct));
         parameter[spot].starting_row = spot;
         parameter[spot].starting_col = 0;
         parameter[spot].ending_col = COL_SIZE-1;
@@ -136,6 +131,13 @@ int is_board_valid(){
 
     for(int i =0; i< 27; i++){
         pthread_join(tid[i], NULL);
+    }
+
+    for (int v = 0; v < 27; v++){
+        if (valid[v] != 1){
+            return 0;
+        }
+        return 1;
     }
 
 
